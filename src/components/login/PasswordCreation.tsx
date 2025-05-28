@@ -45,7 +45,7 @@ const PasswordCreation = ({ onSubmit, isLoading }: PasswordCreationProps) => {
           setNewPassword(e.target.value);
           setPasswordError('');
         }}
-        className="p-2 border rounded"
+        className="p-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
       />
       <input 
         type="password" 
@@ -56,7 +56,7 @@ const PasswordCreation = ({ onSubmit, isLoading }: PasswordCreationProps) => {
           setConfirmPassword(e.target.value);
           setPasswordError('');
         }}
-        className="p-2 border rounded"
+        className="p-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
       />
       
       {passwordError && (

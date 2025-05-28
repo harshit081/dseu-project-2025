@@ -28,7 +28,7 @@ const OtpVerification = ({ onVerify, isLoading }: OtpVerificationProps) => {
         placeholder="Enter 6-digit OTP" 
         value={otp}
         onChange={(e) => setOtp(e.target.value)}
-        className="p-2 border rounded"
+        className="p-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
         maxLength={6}
       />
       <button 

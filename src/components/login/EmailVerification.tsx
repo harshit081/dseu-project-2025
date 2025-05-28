@@ -21,7 +21,7 @@ const EmailVerification = ({ email, onVerify, isLoading }: EmailVerificationProp
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="text-sm text-gray-600 mb-1">
+      <div className="text-sm text-gray-700 mb-1">
         Please enter the email associated with your account:
         <div className="font-medium">{maskEmail(email)}</div>
       </div>
@@ -31,7 +31,7 @@ const EmailVerification = ({ email, onVerify, isLoading }: EmailVerificationProp
         placeholder="Email" 
         value={userEmail}
         onChange={(e) => setUserEmail(e.target.value)}
-        className="p-2 border rounded"
+        className="p-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
       />
       <button 
         onClick={handleSubmit}
