@@ -6,40 +6,41 @@ export interface UserData {
 
 // Dummy API call function to fetch user data
 export const fetchUserData = async (rollNo: string): Promise<UserData> => {
-  // Simulate API call delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // Dummy response
-  return {
-    name: `Student ${rollNo}`,
-    email: `student${rollNo}@dseu.ac.in`,
-    isVerified: Math.random() > 0.5, // Random verification status
-  };
+  try {
+    // Replace with actual API call
+    const response = await fetch(`http://localhost:5000/api/v1/users/rollNumber-exist/${rollNo}`);
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to fetch user data:", error instanceof Error ? error.message : String(error));
+    throw new Error("Failed to fetch user data. Please try again later.");
+  }
 };
 
 // Dummy API call to verify email
 export const verifyEmail = async (email: string, rollNo: string): Promise<{ status: number, message: string }> => {
-  // Simulate API call delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // Randomly simulate different response statuses for demonstration
-  const statusOptions = [200, 401, 501];
-  const randomStatus = statusOptions[Math.floor(Math.random() * statusOptions.length)];
-  
-  if (randomStatus === 200) {
-    return { 
-      status: 200, 
-      message: "OTP sent to your registered email address" 
+  try {
+    const response = await fetch(`http://localhost:5000/api/v1/users/verify-partial-email/${rollNo}/${email}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+
+    return {
+      status: response.status,
+      message: data.message || "OTP sent to your registered email address"
     };
-  } else if (randomStatus === 401) {
-    return { 
-      status: 401, 
-      message: "Invalid email address or roll number. Please try again." 
-    };
-  } else {
-    return { 
-      status: 501, 
-      message: "Server error. Please try again later." 
+  } catch (error) {
+    console.error("Failed to send verification email:", error instanceof Error ? error.message : String(error));
+    return {
+      status: 501,
+      message: "Server error. Please try again later."
     };
   }
 };
@@ -67,24 +68,4 @@ export const createPassword = async (rollNo: string, newPassword: string): Promi
     status: 200,
     message: "Password created successfully. Please login with your new password."
   };
-};
-
-// Utility function to mask email - show first 3 chars, asterisks, and last 3 chars
-export const maskEmail = (email: string): string => {
-  if (!email || email.length <= 6) return email;
-  
-  const atIndex = email.indexOf('@');
-  if (atIndex <= 3) {
-    // Handle short local-part emails
-    const localPart = email.substring(0, atIndex);
-    const domain = email.substring(atIndex);
-    return localPart + domain;
-  }
-  
-  const firstThree = email.substring(0, 3);
-  const lastThree = email.substring(email.length - 3);
-  const middleLength = email.length - 6;
-  const asterisks = '*'.repeat(Math.min(middleLength, 5)); // Limit asterisks to 5 max
-  
-  return `${firstThree}${asterisks}${lastThree}`;
 };
