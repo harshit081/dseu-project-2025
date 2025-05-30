@@ -22,7 +22,11 @@ const EmailVerification = ({ email, onVerify, isLoading }: EmailVerificationProp
     <div className="flex flex-col gap-2">
       <div className="text-sm text-gray-700 mb-1">
         Please enter the email associated with your account:
-        <div className="font-medium">{email}</div>
+        {email && (
+          <div className="font-medium mt-1 p-2 bg-gray-100 rounded-lg">
+            Hint: {email}
+          </div>
+        )}
       </div>
       <input 
         type="email" 
