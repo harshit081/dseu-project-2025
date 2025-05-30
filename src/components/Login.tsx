@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Captcha from "./Captcha";
 import EmailVerification from "./login/EmailVerification";
 import OtpVerification from "./login/OtpVerification";
@@ -25,6 +25,12 @@ const Login = () => {
   const [loginStage, setLoginStage] = useState<
     "initial" | "email" | "otp" | "createPassword" | "password"
   >("initial");
+  const [isClient, setIsClient] = useState(false);
+
+  // hydration error fix (dont know how but fixed)
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Reset the entire form to initial state
   const resetForm = () => {
@@ -152,6 +158,17 @@ const Login = () => {
     }
   };
 
+  if (!isClient) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen w-full bg-gray-50 relative">
       {/* Logo container - only visible on medium and larger screens */}
@@ -193,7 +210,12 @@ const Login = () => {
             Login
           </h2>
 
-          {/* roll no Input alwyas visible but disabled after captcha verification */}
+          {userData && (
+            <div className="text-center mb-2">
+              <p className="text-lg font-medium text-gray-800">Welcome, {userData.name}</p>
+            </div>
+          )}
+
           <div className="flex flex-col gap-2">
             <label
               htmlFor="rollNo"
@@ -213,12 +235,13 @@ const Login = () => {
             />
           </div>
 
-          {/* Show CAPTCHA only in initial stage */}
           {loginStage === "initial" && !captchaVerified && (
-            <Captcha onVerify={handleCaptchaVerify} />
+            <Captcha 
+              onVerify={handleCaptchaVerify} 
+              isEnabled={rollNo.trim().length > 0} 
+            />
           )}
 
-          {/* Show appropriate components based on login stage */}
           {userData && (
             <>
               {loginStage === "email" && (
@@ -252,7 +275,6 @@ const Login = () => {
             </>
           )}
 
-          {/* Message area */}
           {message && (
             <div
               className={`p-3 rounded-lg ${

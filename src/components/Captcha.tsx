@@ -11,9 +11,10 @@ const captcha = new CaptchaJs({
 
 interface CaptchaProps {
   onVerify: (verified: boolean) => void;
+  isEnabled?: boolean; // to check if roll no is filled or not (if not verify disable)
 }
 
-const Captcha = ({ onVerify }: CaptchaProps) => {
+const Captcha = ({ onVerify, isEnabled = true }: CaptchaProps) => {
   const [randomString, setRandomString] = useState("");
   const [captchaImageUrl, setCaptchaImageUrl] = useState("");
   const [userCaptchaInput, setUserCaptchaInput] = useState("");
@@ -93,7 +94,12 @@ const Captcha = ({ onVerify }: CaptchaProps) => {
         </button>
         <button
           onClick={handleVerify}
-          className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors"
+          disabled={!isEnabled} // if there is no roll no
+          className={`py-2 px-4 rounded-lg ${
+            isEnabled 
+              ? "bg-blue-500 hover:bg-blue-600 text-white" 
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          } transition-all`}
         >
           Verify
         </button>
