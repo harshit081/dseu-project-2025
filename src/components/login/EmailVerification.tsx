@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react';
-import { maskEmail } from '@/services/auth';
 
 interface EmailVerificationProps {
   email: string;
@@ -23,7 +22,7 @@ const EmailVerification = ({ email, onVerify, isLoading }: EmailVerificationProp
     <div className="flex flex-col gap-2">
       <div className="text-sm text-gray-700 mb-1">
         Please enter the email associated with your account:
-        <div className="font-medium">{maskEmail(email)}</div>
+        <div className="font-medium">{email}</div>
       </div>
       <input 
         type="email" 
