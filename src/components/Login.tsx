@@ -154,22 +154,42 @@ const Login = () => {
 
   return (
     <div className="min-h-screen w-full bg-gray-50 relative">
-      {/* Logo container - centered at top */}
-      <div className="absolute top-8 left-1/2 transform -translate-x-1/2">
+      {/* Logo container - only visible on medium and larger screens */}
+      <div className="hidden md:block absolute top-24 left-1/2 transform -translate-x-1/2">
         <Image
           src="/logo.png"
           alt="DSEU Logo"
-          width={250} // Increased size
-          height={125} // Maintained aspect ratio
+          width={350}
+          height={225}
           className="object-contain"
           priority
         />
       </div>
 
       {/* Adjusted top padding to account for logo */}
-      <div className="min-h-screen w-full flex items-center justify-center pt-24">
-        <form className="flex flex-col gap-4 max-w-md w-full p-8 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] bg-white border-t-4 border-b-4 border-t-blue-500 border-b-blue-500">
-          <h2 className="text-3xl font-semibold text-center mb-6 text-blue-500">
+      <div className="min-h-screen w-full flex items-center justify-center md:pt-24">
+        <form className="flex flex-col gap-4 w-[95%] md:max-w-md p-4 sm:p-8 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] bg-white border-t-4 border-b-4 border-t-blue-500 border-b-blue-500">
+          {/* Logo and text container - only visible on small screens */}
+          <div className="md:hidden flex flex-col items-center gap-4 mb-4">
+            <Image
+              src="/onlylogo.png"
+              alt="DSEU Logo"
+              width={80}
+              height={80}
+              className="object-contain"
+              priority
+            />
+            <Image
+              src="/onlytext12.png"
+              alt="DSEU Text"
+              width={150}
+              height={30}
+              className="object-contain"
+              priority
+            />
+          </div>
+
+          <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-4 sm:mb-6 text-blue-500">
             Login
           </h2>
 
