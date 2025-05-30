@@ -1,13 +1,5 @@
-'use client'
+"use client";
 
-<<<<<<< Updated upstream
-import { useState } from 'react';
-import Captcha from './Captcha';
-import EmailVerification from './login/EmailVerification';
-import OtpVerification from './login/OtpVerification';
-import PasswordCreation from './login/PasswordCreation';
-import VerifiedUserLogin from './login/VerifiedUserLogin';
-=======
 import { useState, useEffect } from "react";
 import Captcha from "./Captcha";
 import EmailVerification from "./login/EmailVerification";
@@ -15,55 +7,61 @@ import OtpVerification from "./login/OtpVerification";
 import PasswordCreation from "./login/PasswordCreation";
 import VerifiedUserLogin from "./login/VerifiedUserLogin";
 import Image from "next/image";
->>>>>>> Stashed changes
 
-import { 
-  UserData, 
-  fetchUserData, 
-  verifyEmail, 
-  verifyOtp, 
-  createPassword 
-} from '@/services/auth';
+import {
+  UserData,
+  fetchUserData,
+  verifyEmail,
+  verifyOtp,
+  createPassword,
+} from "@/services/auth";
 
 const Login = () => {
-  const [rollNo, setRollNo] = useState('');
+  const [rollNo, setRollNo] = useState("");
   const [captchaVerified, setCaptchaVerified] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [loginStage, setLoginStage] = useState<'initial' | 'email' | 'otp' | 'createPassword' | 'password'>('initial');
+  const [loginStage, setLoginStage] = useState<
+    "initial" | "email" | "otp" | "createPassword" | "password"
+  >("initial");
 
+  // hydration fixing (not sure how but fixed)
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
+  // Reset the entire form to initial state
   const resetForm = () => {
-    setRollNo('');
+    setRollNo("");
     setCaptchaVerified(false);
     setUserData(null);
-    setLoginStage('initial');
-    setMessage('');
+    setLoginStage("initial");
+    setMessage("");
   };
 
   const handleCaptchaVerify = async (verified: boolean) => {
     setCaptchaVerified(verified);
-    
+
     if (verified && rollNo.trim()) {
       setIsLoading(true);
       setMessage("Fetching user information...");
-      
+
       try {
+        // Make the API call to get user data once captcha is verified
         const userData = await fetchUserData(rollNo);
         setUserData(userData);
-        
+
         if (userData.isVerified) {
-          setLoginStage('password');
+          setLoginStage("password");
           setMessage("Please enter your password to continue.");
         } else {
-          setLoginStage('email');
-          setMessage("Account requires verification. Please enter the email associated with your account.");
+          setLoginStage("email");
+          setMessage(
+            "Account requires verification. Please enter the email associated with your account."
+          );
         }
       } catch (error) {
         setMessage("Error fetching user data. Please try again.");
@@ -77,19 +75,16 @@ const Login = () => {
   const handleEmailVerify = async (email: string) => {
     setIsLoading(true);
     setMessage("Verifying email...");
-    
+
     try {
       const response = await verifyEmail(email, rollNo);
-      
+
       if (response.status === 200) {
-<<<<<<< Updated upstream
         // Email verified, show OTP field
-        setLoginStage('otp');
-=======
         setLoginStage("otp");
->>>>>>> Stashed changes
         setMessage(response.message);
       } else {
+        // Error occurred, reset the form
         resetForm();
         setMessage(response.message);
       }
@@ -104,12 +99,12 @@ const Login = () => {
   const handleOtpVerify = async (otp: string) => {
     setIsLoading(true);
     setMessage("Verifying OTP...");
-    
+
     try {
       const response = await verifyOtp(otp, "");
-      
+
       if (response.success) {
-        setLoginStage('createPassword');
+        setLoginStage("createPassword");
         setMessage(response.message);
       } else {
         setMessage(response.message);
@@ -121,21 +116,20 @@ const Login = () => {
     }
   };
 
-  const handlePasswordCreate = async (newPassword: string, confirmPassword: string) => {
+  const handlePasswordCreate = async (
+    newPassword: string,
+    confirmPassword: string
+  ) => {
     setIsLoading(true);
     setMessage("Creating password...");
-    
+
     try {
       const response = await createPassword(rollNo, newPassword);
-      
+
       if (response.status === 200) {
         setMessage(response.message);
-<<<<<<< Updated upstream
-        
-        // Reset the form after 2 seconds
-=======
 
->>>>>>> Stashed changes
+        // Reset the form after 2 seconds
         setTimeout(() => {
           resetForm();
         }, 2000);
@@ -152,15 +146,12 @@ const Login = () => {
   const handleLogin = async (password: string) => {
     setIsLoading(true);
     setMessage("Logging in...");
-    
+
     try {
-<<<<<<< Updated upstream
       // Simulate login API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-=======
       await new Promise((resolve) => setTimeout(resolve, 1000));
->>>>>>> Stashed changes
       setMessage("Login successful!");
+      // Here you would redirect to dashboard or home page
     } catch (error) {
       setMessage("Login failed. Please check your credentials.");
     } finally {
@@ -169,130 +160,29 @@ const Login = () => {
   };
 
   return (
-<<<<<<< Updated upstream
-    <form className="flex flex-col gap-4 max-w-md mx-auto mt-10 p-6 border rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold text-center">Login</h2>
-      
-      {/* roll no Input alwyas visible but disabled after captcha verification */}
-      <div className="flex flex-col gap-2">
-        <input 
-          type="text" 
-          required 
-          placeholder="Roll No." 
-          value={rollNo} 
-          onChange={e => setRollNo(e.target.value)} 
-          className="p-2 border rounded"
-          disabled={captchaVerified}
-        />
-      </div>
-
-      {/* Show CAPTCHA only in initial stage */}
-      {loginStage === 'initial' && !captchaVerified && (
-        <Captcha onVerify={handleCaptchaVerify} />
-      )}
-      
-      {/* Show appropriate components based on login stage */}
-      {userData && (
-        <>
-          {loginStage === 'email' && (
-            <EmailVerification 
-              email={userData.email} 
-              onVerify={handleEmailVerify} 
-              isLoading={isLoading} 
-            />
-          )}
-          
-          {loginStage === 'otp' && (
-            <OtpVerification
-              onVerify={handleOtpVerify}
-              isLoading={isLoading}
-            />
-          )}
-          
-          {loginStage === 'createPassword' && (
-            <PasswordCreation
-              onSubmit={handlePasswordCreate}
-              isLoading={isLoading}
-            />
-          )}
-          
-          {loginStage === 'password' && (
-            <VerifiedUserLogin
-              onSubmit={handleLogin}
-              isLoading={isLoading}
-            />
-          )}
-        </>
-      )}
-
-      {/* Loading indicator */}
-      {isLoading && (
-        <div className="text-center py-2">
-          <span className="inline-block animate-spin mr-2">⟳</span> Loading...
-        </div>
-      )}
-
-      {/* Message area */}
-      {message && (
-        <div className={`p-2 rounded ${
-          message.includes('Error') || message.includes('Invalid') || message.includes('Please') || 
-          message.includes('requires verification') || message.includes('does not match') || 
-          message.includes('Server error') || message.includes('Failed')
-            ? 'bg-red-100 text-red-700' 
-            : 'bg-green-100 text-green-700'
-        }`}>
-          {message}
-        </div>
-      )}
-    </form>
-=======
     <div className="min-h-screen w-full bg-gray-50 relative">
       {isClient ? (
         <>
-          {/* Logo container - only visible on medium and larger screens */}
-          <div className="hidden md:block absolute top-24 left-1/2 transform -translate-x-1/2">
+          <div className="absolute top-8 left-1/2 transform -translate-x-1/2">
             <Image
               src="/logo.png"
               alt="DSEU Logo"
-              width={350}
-              height={225}
+              width={250}
+              height={125}
               className="object-contain"
               priority
             />
           </div>
 
-          {/* Adjusted top padding to account for logo */}
-          <div className="min-h-screen w-full flex items-center justify-center md:pt-24">
-            <form className="flex flex-col gap-4 w-[95%] md:max-w-md p-4 sm:p-8 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] bg-white border-t-4 border-b-4 border-t-blue-500 border-b-blue-500">
-              {/* Logo and text container - only visible on small screens */}
-              <div className="md:hidden flex flex-col items-center gap-4 mb-4">
-                <Image
-                  src="/onlylogo.png"
-                  alt="DSEU Logo"
-                  width={80}
-                  height={80}
-                  className="object-contain"
-                  priority
-                />
-                <Image
-                  src="/onlytext12.png"
-                  alt="DSEU Text"
-                  width={150}
-                  height={30}
-                  className="object-contain"
-                  priority
-                />
-              </div>
-
-              <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-4 sm:mb-6 text-blue-500">
+          <div className="min-h-screen w-full flex items-center justify-center pt-24">
+            <form className="flex flex-col gap-4 max-w-md w-full p-8 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] bg-white border-t-4 border-b-4 border-t-blue-500 border-b-blue-500">
+              <h2 className="text-3xl font-semibold text-center mb-6 text-blue-500">
                 Login
               </h2>
 
               {userData && (
                 <div className="text-center mb-2">
-                  <p className="text-lg font-medium text-gray-800">
-                    Welcome, {userData.name}
-                  </p>
+                  <p className="text-lg font-medium text-gray-800">Welcome, {userData.name}</p>
                 </div>
               )}
 
@@ -316,9 +206,9 @@ const Login = () => {
               </div>
 
               {loginStage === "initial" && !captchaVerified && (
-                <Captcha
-                  onVerify={handleCaptchaVerify}
-                  isEnabled={rollNo.trim().length > 0}
+                <Captcha 
+                  onVerify={handleCaptchaVerify} 
+                  isEnabled={rollNo.trim().length > 0} 
                 />
               )}
 
@@ -388,7 +278,6 @@ const Login = () => {
         <div className="min-h-screen w-full"></div>
       )}
     </div>
->>>>>>> Stashed changes
   );
 };
 

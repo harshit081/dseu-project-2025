@@ -10,13 +10,22 @@ const captcha = new CaptchaJs({
 
 interface CaptchaProps {
   onVerify: (verified: boolean) => void;
+  isEnabled?: boolean; // to check if roll no is filled or not (if not verify disable)
 }
 
+<<<<<<< Updated upstream
 const Captcha = ({ onVerify }: CaptchaProps) => {
   const [randomString, setRandomString] = useState('');
   const [captchaImageUrl, setCaptchaImageUrl] = useState('');
   const [userCaptchaInput, setUserCaptchaInput] = useState('');
   const [message, setMessage] = useState('');
+=======
+const Captcha = ({ onVerify, isEnabled = true }: CaptchaProps) => {
+  const [randomString, setRandomString] = useState("");
+  const [captchaImageUrl, setCaptchaImageUrl] = useState("");
+  const [userCaptchaInput, setUserCaptchaInput] = useState("");
+  const [message, setMessage] = useState("");
+>>>>>>> Stashed changes
 
   // generate captcha when component loads
   useEffect(() => {
@@ -55,6 +64,7 @@ const Captcha = ({ onVerify }: CaptchaProps) => {
   };
 
   return (
+<<<<<<< Updated upstream
     <div className="flex flex-col items-center gap-2">
       {captchaImageUrl && (
         <img src={captchaImageUrl} alt="CAPTCHA" className="border" />
@@ -75,6 +85,55 @@ const Captcha = ({ onVerify }: CaptchaProps) => {
         onChange={e => setUserCaptchaInput(e.target.value)} 
         className="p-2 border rounded w-full"
       />
+=======
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center gap-4">
+        {captchaImageUrl && (
+          <div className="flex-shrink-0">
+            <img
+              src={captchaImageUrl}
+              alt="CAPTCHA"
+              className="h-12 border rounded-lg shadow-sm"
+            />
+          </div>
+        )}
+        <div className="flex-grow">
+          <input
+            type="text"
+            required
+            placeholder="Enter CAPTCHA"
+            value={userCaptchaInput}
+            onChange={(e) => setUserCaptchaInput(e.target.value)}
+            className="w-full p-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <button
+          type="button"
+          onClick={generateCaptcha}
+          className="text-sm text-blue-500 hover:text-blue-600 p-2"
+        >
+          <img
+            src="/loading-arrow.png"
+            alt="Reload CAPTCHA"
+            className="w-5 h-5 hover:rotate-180 transition-transform duration-300"
+          />
+        </button>
+        <button
+          onClick={handleVerify}
+          disabled={!isEnabled} // if there is no roll no
+          className={`py-2 px-4 rounded-lg ${
+            isEnabled 
+              ? "bg-blue-500 hover:bg-blue-600 text-white" 
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          } transition-all`}
+        >
+          Verify
+        </button>
+      </div>
+>>>>>>> Stashed changes
 
       {message && (
         <div className={`p-2 rounded ${message.includes('Invalid') || message.includes('expired') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
