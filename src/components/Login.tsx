@@ -1,13 +1,5 @@
 'use client'
 
-<<<<<<< Updated upstream
-import { useState } from 'react';
-import Captcha from './Captcha';
-import EmailVerification from './login/EmailVerification';
-import OtpVerification from './login/OtpVerification';
-import PasswordCreation from './login/PasswordCreation';
-import VerifiedUserLogin from './login/VerifiedUserLogin';
-=======
 import { useState, useEffect } from "react";
 import Captcha from "./Captcha";
 import EmailVerification from "./login/EmailVerification";
@@ -15,7 +7,6 @@ import OtpVerification from "./login/OtpVerification";
 import PasswordCreation from "./login/PasswordCreation";
 import VerifiedUserLogin from "./login/VerifiedUserLogin";
 import Image from "next/image";
->>>>>>> Stashed changes
 
 import { 
   UserData, 
@@ -82,12 +73,7 @@ const Login = () => {
       const response = await verifyEmail(email, rollNo);
       
       if (response.status === 200) {
-<<<<<<< Updated upstream
-        // Email verified, show OTP field
-        setLoginStage('otp');
-=======
         setLoginStage("otp");
->>>>>>> Stashed changes
         setMessage(response.message);
       } else {
         resetForm();
@@ -130,12 +116,6 @@ const Login = () => {
       
       if (response.status === 200) {
         setMessage(response.message);
-<<<<<<< Updated upstream
-        
-        // Reset the form after 2 seconds
-=======
-
->>>>>>> Stashed changes
         setTimeout(() => {
           resetForm();
         }, 2000);
@@ -154,12 +134,7 @@ const Login = () => {
     setMessage("Logging in...");
     
     try {
-<<<<<<< Updated upstream
-      // Simulate login API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-=======
       await new Promise((resolve) => setTimeout(resolve, 1000));
->>>>>>> Stashed changes
       setMessage("Login successful!");
     } catch (error) {
       setMessage("Login failed. Please check your credentials.");
@@ -169,83 +144,6 @@ const Login = () => {
   };
 
   return (
-<<<<<<< Updated upstream
-    <form className="flex flex-col gap-4 max-w-md mx-auto mt-10 p-6 border rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold text-center">Login</h2>
-      
-      {/* roll no Input alwyas visible but disabled after captcha verification */}
-      <div className="flex flex-col gap-2">
-        <input 
-          type="text" 
-          required 
-          placeholder="Roll No." 
-          value={rollNo} 
-          onChange={e => setRollNo(e.target.value)} 
-          className="p-2 border rounded"
-          disabled={captchaVerified}
-        />
-      </div>
-
-      {/* Show CAPTCHA only in initial stage */}
-      {loginStage === 'initial' && !captchaVerified && (
-        <Captcha onVerify={handleCaptchaVerify} />
-      )}
-      
-      {/* Show appropriate components based on login stage */}
-      {userData && (
-        <>
-          {loginStage === 'email' && (
-            <EmailVerification 
-              email={userData.email} 
-              onVerify={handleEmailVerify} 
-              isLoading={isLoading} 
-            />
-          )}
-          
-          {loginStage === 'otp' && (
-            <OtpVerification
-              onVerify={handleOtpVerify}
-              isLoading={isLoading}
-            />
-          )}
-          
-          {loginStage === 'createPassword' && (
-            <PasswordCreation
-              onSubmit={handlePasswordCreate}
-              isLoading={isLoading}
-            />
-          )}
-          
-          {loginStage === 'password' && (
-            <VerifiedUserLogin
-              onSubmit={handleLogin}
-              isLoading={isLoading}
-            />
-          )}
-        </>
-      )}
-
-      {/* Loading indicator */}
-      {isLoading && (
-        <div className="text-center py-2">
-          <span className="inline-block animate-spin mr-2">⟳</span> Loading...
-        </div>
-      )}
-
-      {/* Message area */}
-      {message && (
-        <div className={`p-2 rounded ${
-          message.includes('Error') || message.includes('Invalid') || message.includes('Please') || 
-          message.includes('requires verification') || message.includes('does not match') || 
-          message.includes('Server error') || message.includes('Failed')
-            ? 'bg-red-100 text-red-700' 
-            : 'bg-green-100 text-green-700'
-        }`}>
-          {message}
-        </div>
-      )}
-    </form>
-=======
     <div className="min-h-screen w-full bg-gray-50 relative">
       {isClient ? (
         <>
@@ -388,7 +286,6 @@ const Login = () => {
         <div className="min-h-screen w-full"></div>
       )}
     </div>
->>>>>>> Stashed changes
   );
 };
 

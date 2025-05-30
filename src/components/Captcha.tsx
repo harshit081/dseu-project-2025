@@ -13,19 +13,11 @@ interface CaptchaProps {
   isEnabled?: boolean; // to check if roll no is filled or not (if not verify disable)
 }
 
-<<<<<<< Updated upstream
-const Captcha = ({ onVerify }: CaptchaProps) => {
-  const [randomString, setRandomString] = useState('');
-  const [captchaImageUrl, setCaptchaImageUrl] = useState('');
-  const [userCaptchaInput, setUserCaptchaInput] = useState('');
-  const [message, setMessage] = useState('');
-=======
 const Captcha = ({ onVerify, isEnabled = true }: CaptchaProps) => {
   const [randomString, setRandomString] = useState("");
   const [captchaImageUrl, setCaptchaImageUrl] = useState("");
   const [userCaptchaInput, setUserCaptchaInput] = useState("");
   const [message, setMessage] = useState("");
->>>>>>> Stashed changes
 
   // generate captcha when component loads
   useEffect(() => {
@@ -64,28 +56,6 @@ const Captcha = ({ onVerify, isEnabled = true }: CaptchaProps) => {
   };
 
   return (
-<<<<<<< Updated upstream
-    <div className="flex flex-col items-center gap-2">
-      {captchaImageUrl && (
-        <img src={captchaImageUrl} alt="CAPTCHA" className="border" />
-      )}
-      <input type="hidden" name="randomString" value={randomString} />
-      <button 
-        type="button" 
-        onClick={generateCaptcha} 
-        className="text-sm text-blue-500"
-      >
-        Refresh CAPTCHA
-      </button>
-      <input 
-        type="text" 
-        required 
-        placeholder="Enter CAPTCHA" 
-        value={userCaptchaInput} 
-        onChange={e => setUserCaptchaInput(e.target.value)} 
-        className="p-2 border rounded w-full"
-      />
-=======
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-4">
         {captchaImageUrl && (
@@ -133,7 +103,6 @@ const Captcha = ({ onVerify, isEnabled = true }: CaptchaProps) => {
           Verify
         </button>
       </div>
->>>>>>> Stashed changes
 
       {message && (
         <div className={`p-2 rounded ${message.includes('Invalid') || message.includes('expired') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
