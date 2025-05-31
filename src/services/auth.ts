@@ -14,8 +14,7 @@ export const fetchUserData = async (rollNo: string): Promise<UserData> => {
       throw new Error(`API error: ${response.status}`);
     }
     return await response.json();
-  } catch (error) {
-    console.error("Failed to fetch user data:", error instanceof Error ? error.message : String(error));
+  } catch {
     throw new Error("Failed to fetch user data. Please try again later.");
   }
 };
@@ -36,8 +35,7 @@ export const verifyEmail = async (email: string, rollNo: string): Promise<{ stat
       status: response.status,
       message: data.message || "OTP sent to your registered email address"
     };
-  } catch (error) {
-    console.error("Failed to send verification email:", error instanceof Error ? error.message : String(error));
+  } catch {
     return {
       status: 501,
       message: "Server error. Please try again later."
@@ -59,10 +57,9 @@ export const verifyOtp = async (otp: string, email: string): Promise<{ success: 
 };
 
 // Dummy API call to create new password
-export const createPassword = async (rollNo: string, newPassword: string): Promise<{ status: number, message: string }> => {
+export const createPassword = async (_rollNo: string, _newPassword: string): Promise<{ status: number, message: string }> => {
   // Simulate API call delay
   await new Promise(resolve => setTimeout(resolve, 1000));
-  
   // Always return success for demo purposes
   return {
     status: 200,

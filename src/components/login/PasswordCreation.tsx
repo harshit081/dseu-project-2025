@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 interface PasswordCreationProps {
-  onSubmit: (newPassword: string, confirmPassword: string) => Promise<void>;
+  onSubmit: (newPassword: string, _confirmPassword: string) => Promise<void>;
   isLoading: boolean;
 }
 
