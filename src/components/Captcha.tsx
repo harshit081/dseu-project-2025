@@ -1,3 +1,4 @@
+
 "use client"
 
 import type React from "react"
@@ -237,3 +238,4 @@ const Captcha = ({ onVerify, isEnabled = true }: CaptchaProps) => {
 }
 
 export default Captcha;
+

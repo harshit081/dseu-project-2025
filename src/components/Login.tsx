@@ -62,7 +62,7 @@ const Login = () => {
             "Account requires verification. Please enter the email associated with your account."
           );
         }
-      } catch (error) {
+      } catch {
         setMessage("Error fetching user data. Please try again.");
         setCaptchaVerified(false);
       } finally {
@@ -87,7 +87,7 @@ const Login = () => {
         resetForm();
         setMessage(response.message);
       }
-    } catch (error) {
+    } catch {
       resetForm();
       setMessage("An unexpected error occurred. Please try again.");
     } finally {
@@ -100,42 +100,43 @@ const Login = () => {
     setMessage("Verifying OTP...");
 
     try {
-      const response = await verifyOtp(otp, "");
-
+      const response = await verifyOtp(otp, rollNo);
       if (response.success) {
         setLoginStage("createPassword");
         setMessage(response.message);
       } else {
         setMessage(response.message);
       }
-    } catch (error) {
+    } catch {
       setMessage("An unexpected error occurred while verifying OTP");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handlePasswordCreate = async (
-    newPassword: string,
-    confirmPassword: string
-  ) => {
+  const handlePasswordCreate = async (newPassword: string) => {
     setIsLoading(true);
     setMessage("Creating password...");
 
     try {
       const response = await createPassword(rollNo, newPassword);
-
       if (response.status === 200) {
         setMessage(response.message);
 
-        // Reset the form after 2 seconds
-        setTimeout(() => {
-          resetForm();
-        }, 2000);
+        // Fetch updated user data to check if verified is now true
+        const updatedUserData = await fetchUserData(rollNo);
+        setUserData(updatedUserData);
+
+        if (updatedUserData.isVerified) {
+          setLoginStage("password");
+          setMessage("Password created successfully! Please log in.");
+        } else {
+          setMessage("Password created, but account not verified. Please contact support.");
+        }
       } else {
         setMessage("Failed to create password. Please try again.");
       }
-    } catch (error) {
+    } catch {
       setMessage("An unexpected error occurred while creating password");
     } finally {
       setIsLoading(false);
@@ -145,13 +146,14 @@ const Login = () => {
   const handleLogin = async (password: string) => {
     setIsLoading(true);
     setMessage("Logging in...");
+    console.log("Logging in with rollNo:", rollNo, "and password:", password);
 
     try {
       // Simulate login API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setMessage("Login successful!");
       // Here you would redirect to dashboard or home page
-    } catch (error) {
+    } catch {
       setMessage("Login failed. Please check your credentials.");
     } finally {
       setIsLoading(false);

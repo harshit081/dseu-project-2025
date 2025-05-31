@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 interface VerifiedUserLoginProps {
-  onSubmit: (password: string) => Promise<void>;
+  onSubmit: (_password: string) => Promise<void>;
   isLoading: boolean;
 }
 
