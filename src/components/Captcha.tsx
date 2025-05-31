@@ -1,13 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { CaptchaJs } from "@solarwinter/captchajs";
-// import ReloadImg from "../../public/loading-arrow.png";
 
-const captcha = new CaptchaJs({
-  client: "demo", // Replace with process.env.CAPTCHAS_CLIENT in production
-  secret: "secret", // Replace with process.env.CAPTCHAS_SECRET in production
-});
 
 interface CaptchaProps {
   onVerify: (verified: boolean) => void;
@@ -20,40 +14,67 @@ const Captcha = ({ onVerify, isEnabled = true }: CaptchaProps) => {
   const [userCaptchaInput, setUserCaptchaInput] = useState("");
   const [message, setMessage] = useState("");
 
+
   // generate captcha when component loads
   useEffect(() => {
     generateCaptcha();
+    // eslint-disable-next-line
   }, []);
 
-  // generate new captcha
-  const generateCaptcha = () => {
-    const random = captcha.getRandomString();
-    setRandomString(random);
-    setCaptchaImageUrl(captcha.getImageUrl({ randomString: random }));
+  // generate new captcha by calling backend
+  const generateCaptcha = async () => {
+    setMessage("");
     setUserCaptchaInput("");
     onVerify(false);
-  };
-
-  // Verify captcha user ne jo input diya
-  const verifyCaptcha = () => {
-    if (!captcha.validateRandomString(randomString)) {
-      setMessage("CAPTCHA has expired. Generating a new one.");
-      generateCaptcha();
-      return false;
-    } else if (!captcha.verifyPassword(randomString, userCaptchaInput)) {
-      setMessage("Invalid CAPTCHA text. Please try again.");
-      generateCaptcha();
-      return false;
-    } else {
-      setMessage("CAPTCHA verified successfully!");
-      onVerify(true);
-      return true;
+    try {
+      // Use the correct backend endpoint for CAPTCHA generation
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+      const res = await fetch(`${backendUrl}/api/v1/users/generate-captcha`, {
+        method: "GET",
+        headers: { "Accept": "application/json" },
+      });
+      if (!res.ok) {
+        throw new Error(`Backend error: ${res.status}`);
+      }
+      const data = await res.json();
+      setRandomString(data.captchaId);
+      setCaptchaImageUrl(data.image);
+    } catch {
+      setMessage("Failed to load CAPTCHA. Please try again.");
     }
   };
 
-  const handleVerify = (e: React.MouseEvent) => {
+
+  // Verify captcha by calling backend
+  const verifyCaptcha = async () => {
+    try {
+      // Use the correct backend endpoint for CAPTCHA verification
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+      const res = await fetch(`${backendUrl}/api/v1/users/verify-captcha`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ captchaId: randomString, answer: userCaptchaInput }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setMessage("CAPTCHA verified successfully!");
+        onVerify(true);
+        return true;
+      } else {
+        setMessage(data.message || "Invalid CAPTCHA. Try again.");
+        generateCaptcha();
+        return false;
+      }
+    } catch {
+      setMessage("Failed to verify CAPTCHA. Please try again.");
+      generateCaptcha();
+      return false;
+    }
+  };
+
+  const handleVerify = async (e: React.MouseEvent) => {
     e.preventDefault();
-    verifyCaptcha();
+    await verifyCaptcha();
   };
 
   return (
