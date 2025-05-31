@@ -146,6 +146,7 @@ const Login = () => {
   const handleLogin = async (password: string) => {
     setIsLoading(true);
     setMessage("Logging in...");
+    console.log("Logging in with rollNo:", rollNo, "and password:", password);
 
     try {
       // Simulate login API call
