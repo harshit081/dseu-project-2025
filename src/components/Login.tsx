@@ -100,7 +100,7 @@ const Login = () => {
     setMessage("Verifying OTP...");
 
     try {
-      const response = await verifyOtp(otp, "");
+      const response = await verifyOtp(otp, rollNo);
       if (response.success) {
         setLoginStage("createPassword");
         setMessage(response.message);
@@ -122,10 +122,17 @@ const Login = () => {
       const response = await createPassword(rollNo, newPassword);
       if (response.status === 200) {
         setMessage(response.message);
-        // Reset the form after 2 seconds
-        setTimeout(() => {
-          resetForm();
-        }, 2000);
+
+        // Fetch updated user data to check if verified is now true
+        const updatedUserData = await fetchUserData(rollNo);
+        setUserData(updatedUserData);
+
+        if (updatedUserData.isVerified) {
+          setLoginStage("password");
+          setMessage("Password created successfully! Please log in.");
+        } else {
+          setMessage("Password created, but account not verified. Please contact support.");
+        }
       } else {
         setMessage("Failed to create password. Please try again.");
       }

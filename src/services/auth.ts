@@ -43,26 +43,36 @@ export const verifyEmail = async (email: string, rollNo: string): Promise<{ stat
   }
 };
 
-// Dummy API call to verify OTP
-export const verifyOtp = async (otp: string, email: string): Promise<{ success: boolean, message: string }> => {
-  // Simulate API call delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // For demo purposes, any 6-digit OTP is considered valid
-  if (/^\d{6}$/.test(otp)) {
-    return { success: true, message: "OTP verified successfully" };
-  } else {
-    return { success: false, message: "Invalid OTP. Please try again." };
+// Real API call to verify OTP using roll number and otp
+export const verifyOtp = async (otp: string, rollNo: string): Promise<{ success: boolean, message: string }> => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/v1/users/verify-otp`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ rollNumber: rollNo, otp }),
+    });
+    const data = await response.json();
+    return { success: data.success, message: data.message };
+  } catch {
+    return { success: false, message: "Server error. Please try again later." };
   }
 };
 
-// Dummy API call to create new password
-export const createPassword = async (_rollNo: string, _newPassword: string): Promise<{ status: number, message: string }> => {
-  // Simulate API call delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  // Always return success for demo purposes
-  return {
-    status: 200,
-    message: "Password created successfully. Please login with your new password."
-  };
+// Real API call to set password using roll number and password
+export const createPassword = async (rollNo: string, newPassword: string): Promise<{ status: number, message: string }> => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/v1/users/set-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ rollNumber: rollNo, password: newPassword }),
+    });
+    const data = await response.json();
+    return { status: response.status, message: data.message };
+  } catch {
+    return { status: 501, message: "Server error. Please try again later." };
+  }
 };
